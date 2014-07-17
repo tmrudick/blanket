@@ -22,7 +22,6 @@ var blanketNode = function(userOptions, cli) {
     }
 
     var blanketConfigs = packageConfigs ? extend(packageConfigs, userOptions) : userOptions,
-        pattern = blanketConfigs ? blanketConfigs.pattern : "src",
         blanket = require("./blanket").blanket,
         oldLoader = require.extensions['.js'],
         newLoader;
@@ -36,7 +35,9 @@ var blanketNode = function(userOptions, cli) {
     }
 
     if (blanketConfigs) {
-        var newOptions = {};
+        var newOptions = {
+            'filter': 'src' // Default filter to src
+        };
         Object.keys(blanketConfigs).forEach(function(option) {
             var optionValue = blanketConfigs[option];
             if (option === "data-cover-only" || option === "pattern") {
@@ -70,6 +71,9 @@ var blanketNode = function(userOptions, cli) {
             }
         });
         blanket.options(newOptions);
+    } else {
+        // If no config is specified, default filter to src.
+        blanket.options('filter', 'src');
     }
 
     // helper functions
